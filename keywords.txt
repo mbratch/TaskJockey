@@ -1,0 +1,10 @@
+TaskJockey	KEYWORD1
+addTask		KEYWORD2
+pauseTask	KEYWORD2
+resumeTask	KEYWORD2
+resetTaskTimer	KEYWORD2
+killAllTasks	KEYWORD2
+killTask	KEYWORD2
+runTasks	KEYWORD2
+
+taskId_t	KEYWORD1
