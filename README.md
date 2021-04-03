@@ -22,13 +22,13 @@ Generally, you only need one task juggler, but you could define more than one if
 ### TaskJockey Methods
 ```c++
 taskId_t addTask(void (*handler)(taskId_t, void *), void *pArgs, uint16_t interval,
-                 bool runImmediate = false, int8_t iterations = -1);
+                 int16_t offsetStart = -1, int8_t iterations = -1);
 ```
 The arguments for this method are:
 * `handler` - The name of a function you have declared which returns `void` and accepts a `taskId_t` argument. `TaskJockey` will call the function at regular, predefined intervals defined by the subsequent parameters. When `TaskJockey` calls the handler, it will pass the task id that has been assigned to that handler as an argument which may be used by the handler to "kill itself" (see `killTask` below) removing it from the task juggler and ending its execution cycle.
 * `pArgs` - A pointer to static or global arguments to be passed to the task every time it is executed.
 * `interval` - The periodic interval according to which you want `handler` to be called. This is in milliseconds and can be as small as 1ms. If an interval of 0 is passed, `addTask` will return immediately and do nothing. Normally, `handler` will be called every `interval` milliseconds indefinitely unless indicated otherwise by the other arguments, or until the task is killed.
-* `runImmediate` - Normally, after `addTask` has been called for a `handler`, `TaskJockey` will run the handler for the first time only after `interval` milliseconds of transpired (`runImmediate` is `false`). If you want `TaskJockey` to run `handler` on the very next scheduler pass, then set this argument to `true`.
+* `offsetStart` - Normally, after `addTask` has been called for a `handler`, `TaskJockey` will run the handler for the first time only after `interval` milliseconds have transpired (`offsetStart` is `interval`). If you want `TaskJockey` to run `handler` starting at a different initial time in the future, set `offsetStart` to the number of milliseconds in the future in which you want it to be first run. If `offsetStart` is negative, it will default to `interval` milliseconds.
 * `iterations` - Defines the number of iterations that you wish to run `handler`. The value defaults to -1 which means it will run indefinitely. A value of 0 will do nothing (the task will not run at all: it will be scheduled but immediately killed). A positive value will run the `handler` that many times at the specified `interval` and then `TaskJockey` will automatically kill it.
 
 `addTask` returns a unique task Id (type `taskId_t`) for the task added which can be used in calls to other `TaskJockey` methods. A value of 0 indicates a null task, meaning that the call failed. This would only happen if you exceed the total allowed number of tasks, which is 255.

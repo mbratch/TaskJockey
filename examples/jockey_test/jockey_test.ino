@@ -30,13 +30,13 @@ void task5(taskId_t taskId) {
 void task3(taskId_t taskId) {
   Serial.print("Task 2 sub 3 ");
   Serial.println(millis() - time);
-  jockey.addTask(task5, NULL, 500, true, 3);
+  jockey.addTask(task5, NULL, 500, 0, 3);
 }
 
 void task2(taskId_t taskId) {
   Serial.print("Task 2 ");
   Serial.println(millis() - time);
-  jockey.addTask(task3, NULL, 2000, true, 3);
+  jockey.addTask(task3, NULL, 2000, 0, 3);
 }
 
 void task4(taskId_t taskId) {
@@ -55,15 +55,15 @@ void task1(taskId_t taskId) {
   else {
     Serial.print("task 1 ");
     Serial.println(millis() - time);
-    jockey.addTask(task4, NULL, 1000, false, 3);
+    jockey.addTask(task4, NULL, 1000, -1, 3);
     n -= 1;
   }
 }
 
 void setup() {
   Serial.begin(115200);
-  jockey.addTask(task1, NULL, 5000, false);
-  jockey.addTask(task2, NULL, 10000, false);
+  jockey.addTask(task1, NULL, 5000);
+  jockey.addTask(task2, NULL, 10000);
   time = millis();
 }
 

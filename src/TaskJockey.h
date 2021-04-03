@@ -10,7 +10,7 @@ class TaskJockey {
         TaskJockey(void);
         ~TaskJockey();
 
-        taskId_t addTask(void (*handler)(taskId_t), void *args, uint16_t interval, bool runImmediate = false, int8_t iterations = -1);
+        taskId_t addTask(void (*handler)(taskId_t), void *args, uint16_t interval, int16_t offsetStart = -1, int8_t iterations = -1);
         void pauseTask(taskId_t taskId);
         void resumeTask(taskId_t taskId);
         void resetTaskTimer(taskId_t taskId);
