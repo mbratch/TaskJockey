@@ -70,7 +70,7 @@ uint32_t getTaskLastRunTime(taskId_t taskId);
 ```
 Gets the last run time in microseconds since the system was last initialized (that is, per `micros()` call)
 ```c++
-void juggle(void);
+void runTasks(void);
 ```
 Check all of the scheduled tasks in the `TaskJockey` that are active (not paused) and run them if their interval has expired.
  
