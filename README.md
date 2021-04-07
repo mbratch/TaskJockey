@@ -1,11 +1,11 @@
 # TaskJockey
 ## Overview
-The `TaskJockey` library for Arduino or other base-level loop systems is a light-weight, cooperative task manager that encapsulates the method of tracking timed task iterations using `millis()` (or other function that returns milliseconds since startup) in your `loop()` function. The idea is to instantiate the task juggler, add tasks (functions) that you want to call periodically at various periods, then just call the task juggler in every call to `loop()` to run your tasks rather than handling the tasks individually with their own timing variables and delays.
+The `TaskJockey` library for Arduino or other base-level loop systems is a light-weight, cooperative task manager that encapsulates the method of tracking timed task iterations using `millis()` (or other function that returns milliseconds since startup) in your `loop()` function. The idea is to instantiate the task jockey, add tasks (functions) that you want to call periodically at various periods, then just call the task jockey in every call to `loop()` to run your tasks rather than handling the tasks individually with their own timing variables and delays.
 
 Using `TaskJockey`, you can:
 * Configure a task to run periodically and indefinitely, and include a pointer to static or global data
 * Configure a task to run periodically but for a limited number of times or just once at a period of time in the future
-* Chain a sequence of tasks to execute at prescribed intervals, one after the other, and run that chain periodically (achieved by allowing juggled tasks to add tasks)
+* Chain a sequence of tasks to execute at prescribed intervals, one after the other, and run that chain periodically (achieved by allowing tasks to add other tasks)
 
 `TaskJockey` is useful for multiple tasks that are timed to run periodically with a granularity of milliseconds (_e.g._, you want to run a particular task every 2ms, or 125ms, or 5s). It is not designed to handle short cycles of periodic execution less than that. The tasks themselves are each expected to execute in less than 1ms on each call.
 
@@ -15,9 +15,9 @@ See the section below on "Using TaskJockey" for more details.
 ### Constructor
 Defining a `TaskJockey` is very simple. There are no arguments:
 ```c++
-TaskJockey juggler;     // Define a task juggler instance
+TaskJockey jockey;     // Define a task jockey instance
 ```
-Generally, you only need one task juggler, but you could define more than one if, for some reason, it worked better with your code structure. Each `TaskJockey` instance would have its own schedule you would need to run.
+Generally, you only need one task jockey, but you could define more than one if, for some reason, it worked better with your code structure. Each `TaskJockey` instance would have its own schedule you would need to run.
 
 ### TaskJockey Methods
 ```c++
@@ -25,7 +25,7 @@ taskId_t addTask(void (*handler)(taskId_t, void *), void *pArgs, uint16_t interv
                  int16_t offsetStart = -1, int8_t iterations = -1);
 ```
 The arguments for this method are:
-* `handler` - The name of a function you have declared which returns `void` and accepts a `taskId_t` argument. `TaskJockey` will call the function at regular, predefined intervals defined by the subsequent parameters. When `TaskJockey` calls the handler, it will pass the task id that has been assigned to that handler as an argument which may be used by the handler to "kill itself" (see `killTask` below) removing it from the task juggler and ending its execution cycle.
+* `handler` - The name of a function you have declared which returns `void` and accepts a `taskId_t` argument. `TaskJockey` will call the function at regular, predefined intervals defined by the subsequent parameters. When `TaskJockey` calls the handler, it will pass the task id that has been assigned to that handler as an argument which may be used by the handler to "kill itself" (see `killTask` below) removing it from the task jockey and ending its execution cycle.
 * `pArgs` - A pointer to static or global arguments to be passed to the task every time it is executed.
 * `interval` - The periodic interval according to which you want `handler` to be called. This is in milliseconds and can be as small as 1ms. If an interval of 0 is passed, `addTask` will return immediately and do nothing. Normally, `handler` will be called every `interval` milliseconds indefinitely unless indicated otherwise by the other arguments, or until the task is killed.
 * `offsetStart` - Normally, after `addTask` has been called for a `handler`, `TaskJockey` will run the handler for the first time only after `interval` milliseconds have transpired (`offsetStart` is `interval`). If you want `TaskJockey` to run `handler` starting at a different initial time in the future, set `offsetStart` to the number of milliseconds in the future in which you want it to be first run. If `offsetStart` is negative, it will default to `interval` milliseconds.
@@ -75,7 +75,7 @@ void runTasks(void);
 Check all of the scheduled tasks in the `TaskJockey` that are active (not paused) and run them if their interval has expired.
  
 ## Using TaskJockey
-In the simplest case, you instantiate a `TaskJockey` variable, add tasks in your `setup()` that you wish to run periodically, then call the `juggle()` method on ever iteration of `loop()`. `juggle()` takes no arguments.
+In the simplest case, you instantiate a `TaskJockey` variable, add tasks in your `setup()` that you wish to run periodically, then call the `runTasks()` method on ever iteration of `loop()`. `runTasks()` takes no arguments.
 
 ```c++
 #include <TaskJockey.h>
@@ -94,14 +94,14 @@ void task2(taskId_t taskId, void *pArgs) {
 
 setup() {
   ...
-  // Run task1 every 5 seconds, starting on the next 'juggle'
-  juggler.addTask(task1, NULL, 5000, true);
+  // Run task1 every 5 seconds, starting on the next 'jockey'
+  jockey.addTask(task1, NULL, 5000, true);
 
   // Run task2 every 1 second starting 1 second from now
-  juggler.addTask(task2, NULL, 1000);
+  jockey.addTask(task2, NULL, 1000);
   
   // Run task3 every 3 seconds, starting 3 seconds from now, a total of 5 times
-  juggler.addTask(task3, NULL, 3000, false, 5);  
+  jockey.addTask(task3, NULL, 3000, false, 5);  
 }
 
 loop() {
