@@ -108,6 +108,21 @@ void *TaskJockey::getTaskArgs(taskId_t taskId)
     return (task == NULL) ? NULL : task->args;
 }
 
+uint16_t TaskJockey::getTaskInterval(taskId_t taskId)
+{
+    taskItem_t *task = findTask(taskId);
+
+    return (task == NULL) ? 0 : task->interval;
+}
+
+void TaskJockey::setTaskInterval(taskId_t taskId, uint16_t interval)
+{
+    taskItem_t *task = findTask(taskId);
+
+    if (task != NULL)
+        task->interval = interval;
+}
+
 int8_t TaskJockey::getTaskIterationsRemaining(taskId_t taskId)
 {
     taskItem_t *task = findTask(taskId);

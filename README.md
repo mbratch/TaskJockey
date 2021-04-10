@@ -62,6 +62,14 @@ void *getTaskArgs(taskId_t taskId);
 ```
 Get a pointer to the task argument(s). This is the same pointer to the static or global arguments that was passed at the time the task was added to `TaskJockey`.
 ```c++
+uint16_t getTaskInterval(taskId_t taskId);
+```
+Gets the interval time (milliseconds) of the given task.
+```c++
+uint16_t setTaskInterval(taskId_t taskId, uint16_t interval);
+```
+Sets (changes) the interval time (milliseconds) of the given task.
+```c++
 int8_t getTaskIterationsRemaining(taskId_t taskId);
 ```
 Gets the number of task iterations remaining. A value of -1 means the task will be runs indefinitely.
@@ -113,7 +121,7 @@ loop() {
 As mentioned in the overview, `TaskJockey` is a cooperative, base-level task scheduler. Each task must not hog time by calling `delay`. In addition, the `loop()` function should also avoid calling `delay` for `TaskJockey` to work effectively. The intent of `TaskJockey` is for you to be able to manage longer delays via discrete, timed tasks rather than with inline delays.
 
 You may call `TaskJockey` methods from within a scheduled task. This allows you to do two things:
-* You can chain tasks by calling `addTask` from within another task. Be mindful of iterations and intervals, since you can easily fill up the `TaskJockey` task table with this. When chaining tasks, you want to keep iterations low (perhaps just 1) and intervals low. Generally, you want your total chained task executions to complete within the interval duration of the "parent" task. If you continually add more tasks than are killed, you will eventually fill up the task table (which is approximately 255 tasks) and `TaskJockey` will quietly stop adding them to the table.
+* You can chain tasks by calling `addTask` from within another task. Be mindful of iterations and intervals, since you can otherwise fill up the `TaskJockey` task table with this. When chaining tasks, you want to keep iterations low (perhaps just 1) and intervals low. Generally, you want your total chained task executions to complete within the interval duration of the "parent" task. If you continually add more tasks than are killed, you will eventually fill up the task table (which is approximately 255 tasks) and `TaskJockey` will quietly stop adding them to the table.
 * A task can conditionally terminate itself by calling `killTask` (with its `taskId`) under those conditions within the execution of the task.
 
 You may also add the same task multiple times with different settings if needed. Within the task itself, you can track which instance of the task you are executing by comparing the task ids.

@@ -17,6 +17,8 @@ class TaskJockey {
         void killAllTasks(void);
         void killTask(taskId_t taskId);
         void *getTaskArgs(taskId_t taskId);
+        uint16_t getTaskInterval(taskId_t taskId);
+        void setTaskInterval(taskId_t taskId, uint16_t interval);
         int8_t getTaskIterationsRemaining(taskId_t taskId);
         uint32_t getTaskLastRunTime(taskId_t taskId);
         void runTasks(void);
