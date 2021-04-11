@@ -100,6 +100,10 @@ void task2(taskId_t taskId, void *pArgs) {
   // Do some things here, too
 }
 
+void task3(taskId_t taskId, void *pArgs) {
+  // Do some other things
+}
+
 setup() {
   ...
   // Run task1 every 5 seconds, starting on the next 'jockey'
