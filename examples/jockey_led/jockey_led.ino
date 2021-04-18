@@ -43,6 +43,7 @@ void ledFlashSequence(taskId_t taskId) {
     jockey.addTask(ledFlashOn, jockey.getTaskArgs(taskId), 250, 0, 3); // Run the LED flash ON 3 times, once very 250ms
 }
 
+// Simplistic button press without debounce
 void buttonPress(void) {
   // NOTE: do not call TaskJuggler from an interrupt handler
   buttonPressed = true;
