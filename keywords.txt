@@ -7,7 +7,7 @@ killAllTasks	KEYWORD2
 killTask	KEYWORD2
 getTaskArgs  KEYWORD2
 getTaskInterval  KEYWORD2
-setTaskIntercal  KEYWORD2
+setTaskInterval  KEYWORD2
 getTaskIterationsRemaining  KEYWORD2
 runTasks	KEYWORD2
 
