@@ -18,7 +18,7 @@ TaskJockey::~TaskJockey()
 }
 
 taskId_t TaskJockey::addTask(void (*handler)(taskId_t), void *args,
-    uint16_t interval, int16_t offsetStart, int8_t iterations)
+    uint16_t interval, uint16_t offsetStart, int8_t iterations)
 {
     if (interval == 0)
         return 0;
@@ -36,10 +36,7 @@ taskId_t TaskJockey::addTask(void (*handler)(taskId_t), void *args,
     task->interval = interval;
     task->iteration = iterations;
     task->state = taskActive;
-    task->lastRunTime = timeNow();
-
-    if (offsetStart >= 0)
-        task->lastRunTime -= (task->interval - offsetStart);
+    task->lastRunTime = timeNow() - task->interval + offsetStart;
 
     task->nextTask = NULL;
 

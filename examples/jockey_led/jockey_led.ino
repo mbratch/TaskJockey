@@ -33,7 +33,7 @@ void ledFlashOff(taskId_t taskId) {
 void ledFlashOn(taskId_t taskId) {
   uint8_t *pLedPin = (uint8_t *)jockey.getTaskArgs(taskId);
   digitalWrite(*pLedPin, HIGH);
-  jockey.addTask(ledFlashOff, pLedPin, 125, -1, 1); // Turn off the LED once after 125 ms
+  jockey.addTask(ledFlashOff, pLedPin, 125, 125, 1); // Turn off the LED once after 125 ms
 }
 
 void ledFlashSequence(taskId_t taskId) {

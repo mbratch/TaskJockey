@@ -23,13 +23,13 @@ Generally, you only need one task jockey, but you could define more than one if,
 ### TaskJockey Methods
 ```c++
 taskId_t addTask(void (*handler)(taskId_t), void *pArgs, uint16_t interval,
-                 int16_t offsetStart = -1, int8_t iterations = -1);
+                 uint16_t offsetStart = 0, int8_t iterations = -1);
 ```
 The arguments for this method are:
-* `handler` - The name of a function you have declared which returns `void` and accepts a `taskId_t` argument. `TaskJockey` will call the function at regular, predefined intervals defined by the subsequent parameters. When `TaskJockey` calls the handler, it will pass the task id that has been assigned to that handler as an argument which may be used by the handler to "kill itself" (see `killTask` below) removing it from the task jockey and ending its execution cycle.
+* `handler` - The name of a function you have declared which returns `void` and accepts a `taskId_t` argument. `TaskJockey` will call the function at regular, predefined intervals defined by the subsequent parameters. When `TaskJockey` calls the handler, it will pass the task id that has been assigned to that handler as an argument which may be used by the handler to obtain its arguments, or to "kill itself" (see `killTask` below).
 * `pArgs` - A pointer to _static_ or _global_ arguments to be passed to the task every time it is executed.
 * `interval` - The periodic interval according to which you want `handler` to be called. This is in milliseconds and can be as small as 1ms. If an interval of 0 is passed, `addTask` will return immediately and do nothing. Normally, `handler` will be called every `interval` milliseconds indefinitely unless indicated otherwise by the other arguments, or until the task is killed.
-* `offsetStart` - Normally, after `addTask` has been called for a `handler`, `TaskJockey` will run the handler for the first time only after `interval` milliseconds have transpired (`offsetStart` is `interval`). If you want `TaskJockey` to run `handler` starting at a different initial time in the future, set `offsetStart` to the number of milliseconds in the future in which you want it to be first run. If `offsetStart` is negative, it will default to `interval` milliseconds.
+* `offsetStart` - Specifies the number of milliseconds in the future in which you want the first execution of `handler` to occur. The default value is 0, meaning that the `handler` is first called on the very next execution of `runTasks()`.
 * `iterations` - Defines the number of iterations that you wish to run `handler`. The value defaults to -1 which means it will run indefinitely. A value of 0 will do nothing (the task will not run at all: it will be scheduled but immediately killed). A positive value will run the `handler` that many times at the specified `interval` and then `TaskJockey` will automatically kill it.
 
 `addTask` returns a unique task Id (type `taskId_t`) for the task added which can be used in calls to other `TaskJockey` methods. A value of 0 indicates a null task, meaning that the call failed. This would only happen if you exceed the total allowed number of tasks, which is 255.
@@ -56,12 +56,12 @@ All tasks in the `TaskJockey` will be killed.
 ```c++
 void killTask(taskId_t taskId);
 ```
-Kill the specified task. A task is allowed to kill itself (which is actually a useful feature).
+Kill the specified task, removing it from the task jockey and ending its execution cycle. A task is allowed to kill itself (which is a useful feature).
 
 ```c++
 void *getTaskArgs(taskId_t taskId);
 ```
-Get a pointer to the task argument(s). This is the same pointer to the static or global arguments that was passed at the time the task was added to `TaskJockey`.
+Get the pointer to the task argument(s). This is the same pointer to the static or global argument that was passed at the time the task was added to `TaskJockey`.
 ```c++
 uint16_t getTaskInterval(taskId_t taskId);
 ```
@@ -113,7 +113,7 @@ void task2(taskId_t taskId) {
   ...
 
   // Run task3 every 100 milliseconds, starting 100ms from now, a total of 5 times
-  jockey.addTask(task3, NULL, 100, -1, 5);
+  jockey.addTask(task3, NULL, 100, 100, 5);
 }
 
 setup() {
@@ -121,10 +121,10 @@ setup() {
 
   ...
   // Run task1 every 5 seconds, starting on the next 'runTasks' call
-  jockey.addTask(task1, &shared_value, 5000, 0);
+  jockey.addTask(task1, &shared_value, 5000);
 
   // Run task2 every 1 second starting 1 second from now
-  jockey.addTask(task2, &shared_value, 1000);
+  jockey.addTask(task2, &shared_value, 1000, 1000);
 }
 
 loop() {

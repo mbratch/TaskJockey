@@ -55,7 +55,7 @@ void task1(taskId_t taskId) {
   else {
     Serial.print("task 1 ");
     Serial.println(millis() - time);
-    jockey.addTask(task4, NULL, 1000, -1, 3);
+    jockey.addTask(task4, NULL, 1000, 1000, 3);
     n -= 1;
   }
 }
