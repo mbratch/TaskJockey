@@ -84,7 +84,7 @@ void runTasks(void);
 Check all of the scheduled tasks in the `TaskJockey` that are active (not paused) and run them if their interval has expired.
  
 ## Using TaskJockey
-In the simplest case, you instantiate a `TaskJockey` variable, add tasks in your `setup()` that you wish to run periodically, then call the `runTasks()` method on ever iteration of `loop()`. `runTasks()` takes no arguments.
+In the simplest case, you instantiate a `TaskJockey` variable, add tasks in your `setup()` that you wish to run periodically, then call the `runTasks()` method on ever iteration of `loop()`. `runTasks()` takes no arguments. 
 
 ```c++
 #include <TaskJockey.h>
@@ -128,8 +128,46 @@ setup() {
 }
 
 loop() {
-  // you can do other work here, but don't consume milliseconds or more of time
+  // You can do other work here, but don't use 'delay' and consume milliseconds or more of time.
+  // You can find a way to manage your work in brief tasks using TaskJockey.
   ...
+  jockey.runTasks();
+}
+```
+Here's a more concrete but trivial example Bshowing how you can use `TaskJockey` to create a simple sequence of flashing a specified LED quickly 3 times (1/8 second on, 1/8 second off) every 4 seconds. You can create more complex timing scenarios for events by layering and sequencing tasks.
+```c++
+#include <TaskJockey.h>
+
+const byte ledPin = LED_BUILTIN;
+
+TaskJockey jockey;   // TaskJugger instance
+
+void toggleLed(taskId_t taskId) {
+  static byte ledState = LOW;
+  byte pin = *(byte *)jockey.getTaskArgs(taskId);
+
+  // Toggle the LED state
+  ledState = (ledState == LOW) ? HIGH : LOW;
+  digitalWrite(pin, ledState);
+}
+
+void sequenceLed(taskId_t taskId) {
+  // toggle the LED 6 times, once every 125 milliseconds
+  jockey.addTask(toggleLed, jockey.getTaskArgs(taskId), 125, 0, 6);
+}
+
+setup() {
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
+
+  // Run the LED sequence indefinitely every 4 seconds, starting on the next 'runTasks' call
+  jockey.addTask(sequenceLed, (void *)&ledPin, 4000);
+}
+
+loop() {
+  // You can do other work here, but don't use 'delay' and consume milliseconds or more of time.
+  // You can find a way to manage your work in brief tasks using TaskJockey.
+
   jockey.runTasks();
 }
 ```
