@@ -11,16 +11,16 @@ class TaskJockey {
         ~TaskJockey();
 
         taskId_t addTask(void (*handler)(taskId_t), void *args, uint16_t interval, uint16_t offsetStart = 0, int8_t iterations = -1);
-        void pauseTask(taskId_t taskId);
-        void resumeTask(taskId_t taskId);
-        void resetTaskTimer(taskId_t taskId);
+        void pauseTask(taskId_t);
+        void resumeTask(taskId_t);
+        void resetTaskTimer(taskId_t);
         void killAllTasks(void);
-        void killTask(taskId_t taskId);
-        void *getTaskArgs(taskId_t taskId);
-        uint16_t getTaskInterval(taskId_t taskId);
-        void setTaskInterval(taskId_t taskId, uint16_t interval);
-        int8_t getTaskIterationsRemaining(taskId_t taskId);
-        uint32_t getTaskLastRunTime(taskId_t taskId);
+        void killTask(taskId_t);
+        void *getTaskArgs(taskId_t);
+        uint16_t getTaskInterval(taskId_t);
+        void setTaskInterval(taskId_t, uint16_t);
+        int8_t getTaskIterationsRemaining(taskId_t);
+        uint32_t getTaskLastRunTime(taskId_t);
         void runTasks(void);
 
     private:
@@ -45,7 +45,7 @@ class TaskJockey {
         void deleteDeadTasks(void); // Delete all dead tasks
         uint32_t timeNow(void);     // Get current time
         taskId_t newTaskId(void);   // Get a new (currently unused) task Id
-        taskItem_t *findTask(taskId_t taskId);  // Find the given task id in the task table
+        taskItem_t *findTask(taskId_t);  // Find the given task id in the task table
 
         uint32_t lastTime_;         // last time the scheduler ran
         taskId_t nextTaskId_;       // next assumed available task Id

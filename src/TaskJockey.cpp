@@ -41,6 +41,7 @@ taskId_t TaskJockey::addTask(void (*handler)(taskId_t), void *args,
     task->nextTask = NULL;
 
     // Add the task to the task table
+
     taskItem_t **ttp;
 
     for (ttp = &taskTable_; *ttp != NULL; ttp = &((*ttp)->nextTask))
@@ -135,7 +136,7 @@ uint32_t TaskJockey::getTaskLastRunTime(taskId_t taskId)
 }
 
 void TaskJockey::deleteDeadTasks(void) {
-    for (taskItem_t* task = taskTable_, *priorTask = NULL; task != NULL; ) {
+    for (taskItem_t *task = taskTable_, *priorTask = NULL; task != NULL; ) {
         if (task->state == taskDead) {
             taskItem_t *thisTask = task;
 
@@ -162,7 +163,9 @@ void TaskJockey::runTasks(void)
         taskItem_t *thisTask = task;
         task = task->nextTask;
 
-        if (currentTime - thisTask->lastRunTime >= thisTask->interval &&
+        uint32_t diffTime = currentTime - thisTask->lastRunTime;
+
+        if (diffTime <= 0xFFFFU && diffTime >= thisTask->interval &&
                  thisTask->iteration != 0 && thisTask->state == taskActive) {
             thisTask->handler(thisTask->taskId);
             thisTask->lastRunTime = currentTime;
@@ -222,7 +225,7 @@ TaskJockey::taskItem_t *TaskJockey::findTask(taskId_t taskId)   // Find the give
     if (taskId == 0)
         return NULL;
 
-    for (taskItem_t* task = taskTable_; task != NULL; task = task->nextTask) {
+    for (taskItem_t *task = taskTable_; task != NULL; task = task->nextTask) {
         if (task->taskId == taskId)
             return task;
     }
