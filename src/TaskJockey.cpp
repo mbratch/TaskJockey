@@ -119,7 +119,7 @@ void TaskJockey::setTaskInterval(taskId_t taskId, uint16_t interval)
     taskItem_t *task = findTask(taskId);
 
     if (task != NULL)
-        task->interval = interval;
+        task->runInterval = interval;
 }
 
 int8_t TaskJockey::getTaskIterationsRemaining(taskId_t taskId)
