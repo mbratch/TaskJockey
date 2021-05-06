@@ -35,7 +35,8 @@ class TaskJockey {
             void (*handler)(taskId_t);  // Task function
             taskState_t state;      // Task state
             void *args;             // pointer to arguments
-            uint32_t interval;      // run in specified millisecond intervals
+            uint32_t runInterval;   // run in specified millisecond intervals
+            uint32_t interval;      // current run interval
             int8_t iteration;       // Iterations remaining to run (-1 is infinite)
             uint32_t lastRunTime;   // Last run time (ms)
             uint32_t elapsedTime;   // Time elapsed since last run time

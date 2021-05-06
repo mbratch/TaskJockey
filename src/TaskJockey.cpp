@@ -33,10 +33,11 @@ taskId_t TaskJockey::addTask(void (*handler)(taskId_t), void *args,
     task->taskId = taskId;
     task->handler = handler;
     task->args = args;
-    task->interval = interval;
+    task->interval = offsetStart;       // Set the initial interval to be the offsetStart
+    task->runInterval = interval;       // Save the continuing run interval
     task->iteration = iterations;
     task->state = taskActive;
-    task->lastRunTime = timeNow() - task->interval + offsetStart;
+    task->lastRunTime = timeNow();
 
     task->nextTask = NULL;
 
@@ -163,12 +164,11 @@ void TaskJockey::runTasks(void)
         taskItem_t *thisTask = task;
         task = task->nextTask;
 
-        uint32_t diffTime = currentTime - thisTask->lastRunTime;
-
-        if (diffTime <= 0xFFFFU && diffTime >= thisTask->interval &&
+        if (currentTime - thisTask->lastRunTime >= thisTask->interval &&
                  thisTask->iteration != 0 && thisTask->state == taskActive) {
             thisTask->handler(thisTask->taskId);
             thisTask->lastRunTime = currentTime;
+            thisTask->interval = thisTask->runInterval;
 
             if (thisTask->iteration > 0)
                 thisTask->iteration -= 1;
