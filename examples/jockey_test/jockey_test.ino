@@ -8,7 +8,7 @@
  *
  * License: MIT (per LICENSE.txt)
  *
- * This example program runs simple TaskJuggler tests that display information
+ * This example program runs simple TaskJockey tests that display information
  * on the serial monitor.
  *
  * See the included README.md for additional details.
