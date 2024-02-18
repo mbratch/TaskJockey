@@ -8,7 +8,7 @@
  *
  * License: MIT (per LICENSE.txt)
  *
- * This example program demonstrates using TaskJuggler for chained and
+ * This example program demonstrates using TaskJockey for chained and
  * self-killing tasks. This program assumes you have a button hooked up to
  * go HIGH on digital I/O pin 3 when the button is pressed. Every 5 seconds,
  * The program will blink the built-in LED 3 times quickly (125ms pulses).
