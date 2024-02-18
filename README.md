@@ -8,7 +8,7 @@ Using `TaskJockey`, you can:
 * Chain a sequence of tasks to execute at prescribed intervals, one after the other, and run that chain periodically (achieved by tasks adding other tasks)
 * Share static data between tasks
 
-`TaskJockey` is useful for multiple tasks that are timed to run periodically with a granularity of milliseconds (_e.g._, you want to run a particular task every 2ms, or 125ms, or 5s). It is not designed to handle short cycles of periodic execution less than that. The tasks themselves are each expected to execute in less than 1ms on each call.
+`TaskJockey` is useful for multiple tasks that are timed to run periodically with a granularity of milliseconds (_e.g._, you want to run a particular task every 2ms, or 125ms, or 5s). It is not designed to handle short cycles of periodic execution less than that. The tasks themselves are each expected to execute in much less time than the shortest active task period on each call.
 
 See the section below on "Using TaskJockey" for more details.
 
